@@ -1,8 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import "hardhat/console.sol";
-import "./Summ.sol";
+// import "hardhat/console.sol";
+import "./FirmOffers.sol";
+import "./SoftOffers.sol";
+
+error SummTerms__MustBeOpponent(address _who); 
+error SummTerms__SoftOfferCapAmountRange0_10(uint _amount); 
+error SummTerms__FirmOfferCapAmountRange10(uint _amount); 
+error SummTerms__PartiesMustBeDifferentWallets(); 
+error SummTerms__PenaltyPercentRange(); 
+
+// address initalizedSumm = address(new Summ(creator, opponent, totalSoftOffersCap, totalFirmOffersCap, softRange, firmRange, penaltyPercent, summFoundation ));
+
+
 
 contract SummTerms {
     event TermsResponse(address _initializedSumm, bool _created);
@@ -23,10 +34,12 @@ contract SummTerms {
     address payable immutable summFoundation;
 
     modifier onlyOpponent() {
-        require(
-            msg.sender == opponent,
-            "Only the contract opponent can call this function."
-        );
+        // require(
+        //     msg.sender == opponent,
+        //     "Only the contract opponent can call this function."
+        // );
+        if(msg.sender != opponent) revert SummTerms__MustBeOpponent(msg.sender); 
+    
         _;
     }
 
@@ -40,25 +53,20 @@ contract SummTerms {
         uint _penaltyPercent,
         address payable _summFoundation
     ) {
-        require(
-            _totalSoftOffersCap < 10 && _totalSoftOffersCap > 0,
-            "amount of soft offer rounds cannot exceed 10 or be below 0"
-        );
-        require(
-            _totalFirmOffersCap < 10,
-            "amount of firm offers cannot exceed 10"
-        );
-        require(
-            _opponent != _creator,
-            "Opponent address cannot be the same as the creator address"
-        );
+        if(_totalSoftOffersCap > 10 || _totalSoftOffersCap < 0){
+            revert SummTerms__SoftOfferCapAmountRange0_10(_totalSoftOffersCap); 
+        }
+        if(_totalFirmOffersCap > 10) {
+            revert SummTerms__FirmOfferCapAmountRange10(_totalFirmOffersCap); 
+        }
+        if(_opponent == _creator){
+            revert SummTerms__PartiesMustBeDifferentWallets(); 
+        }
         require(_softRange > 0 && _softRange < 40);
         require(_firmRange > 0 && _firmRange < 40);
-        require(
-            _penaltyPercent > 0 && _penaltyPercent < 20,
-            "penalty percent must be in range of 0-19%"
-        );
-
+        if(_penaltyPercent < 0 || _penaltyPercent > 20){
+            revert SummTerms__PenaltyPercentRange(); 
+        }
         creator = _creator;
         opponent = _opponent;
         totalSoftOffersCap = _totalSoftOffersCap;
@@ -71,47 +79,34 @@ contract SummTerms {
 
     function respondToTerms(bool _response) public onlyOpponent {
         if (_response == true) {
-            address initalizedSumm = address(new Summ(address(this)));
+            address initalizedSumm = address(new FirmOffers(address(this)));
             emit TermsResponse(initalizedSumm, true);
             emit TestEvent(613);
             termsStatus = true;
             createdSumms.push(initalizedSumm);
         } else {
-            console.log("before events");
+            // console.log("before events");
             emit TermsResponse(
                 0x0000000000000000000000000000000000000000,
                 false
             );
             emit TestEvent(770); // these events are not working and I dont know why.. maybe gas limit reached???
-            console.log("after events Moish");
-            console.log("TestEvent", 770);
+            // console.log("after events Moish");
+            // console.log("TestEvent", 770);
         }
     }
 
-    function getSummary()
-        public
-        view
-        returns (
-            address payable,
-            address payable,
-            uint,
-            uint,
-            uint,
-            uint,
-            uint,
-            bool
-        )
-    {
-        return (
-            creator,
-            opponent,
-            totalSoftOffersCap,
-            totalFirmOffersCap,
-            softRange,
-            firmRange,
-            penaltyPercent,
+    function getSummary() public view returns(address payable, address payable, uint, uint, uint, uint, uint, bool){
+        return(
+            creator, 
+            opponent, 
+            totalSoftOffersCap, 
+            totalFirmOffersCap, 
+            softRange, 
+            firmRange, 
+            penaltyPercent, 
             termsStatus
-        );
+        ); 
     }
 
     function getCreator() public view returns (address payable) {

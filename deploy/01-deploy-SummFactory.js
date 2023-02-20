@@ -22,13 +22,17 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         waitConfirmations: waitBlockConfirmations, // how long to wait before continuing with script and verifiying
     })
 
+    log(
+        `SummFactory deployed to: ${SummFactory.address} on ${network.name} network.`
+    )
+
     // Verify the deployment (we not on development chains and we have a etherscan API then verify. )
-    if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
-        log("Verifying...")
-        await verify(SummFactory.address, arguments)
-    }
-    log("----------------------------------------------------")
-    console.log("SummFactory deployed to:", SummFactory.address); 
+    // if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+    //     log("Verifying...")
+    //     await verify(SummFactory.address, arguments)
+    // }
+    // log("----------------------------------------------------")
+    // console.log("SummFactory deployed to:", SummFactory.address); 
 }
 
 module.exports.tags = ["all", "summFactory"] // when giving command in terminal to deploy can use tags to only deploy certain ones..
