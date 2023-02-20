@@ -62,22 +62,22 @@ contract Summ {
     uint public firmRange;
     uint public penaltyPercent;
 
-    bool private firstRoundSafe;
+    bool public firstRoundSafe;
 
     uint private culumativeGiverAmount;
     uint private culumativeReceiverAmount;
 
-    uint private mediumNumber;
-    uint private penalty;
+    uint public mediumNumber;
+    uint public penalty;
 
     bool public resolved; // maybe change these two states to an Enum (resolved and softRoundActive) // pastFirstFirmOffers and softRoundCurrentlyActive modifiers...
     bool public softRoundActive = true;
 
-    uint private currentSoftGiverOffer;
-    uint private currentSoftReceiverOffer;
+    uint public currentSoftGiverOffer;
+    uint public currentSoftReceiverOffer;
 
-    uint private currentFirmGiverOffer;
-    uint private currentFirmReceiverOffer;
+    uint public currentFirmGiverOffer;
+    uint public currentFirmReceiverOffer;
 
     uint private finalSoftOffer;
     uint private finalFirmOffer;
@@ -667,80 +667,80 @@ contract Summ {
         }
     }
 
-    function creatorTakeItOrLeaveIt(
-        uint _amount
-    ) public onlyCreator unresolved pastFirstFirmOffers {
-        require(creatorTakeItOrLeaveItGiven == false);
-        require(balance[creator] >= _amount);
-        finalTakeItOrLeaveItAmount = _amount;
-        creatorTakeItOrLeaveItGiven = true;
-        emit TakeItOrLeaveItOfferGiven(creator, true, _amount);
-    }
+    // function creatorTakeItOrLeaveIt(
+    //     uint _amount
+    // ) public onlyCreator unresolved pastFirstFirmOffers {
+    //     require(creatorTakeItOrLeaveItGiven == false);
+    //     require(balance[creator] >= _amount);
+    //     finalTakeItOrLeaveItAmount = _amount;
+    //     creatorTakeItOrLeaveItGiven = true;
+    //     emit TakeItOrLeaveItOfferGiven(creator, true, _amount);
+    // }
 
-    function receiverTakeItOrLeaveItResponse(
-        bool _accept
-    ) public onlyOpponent unresolved pastFirstFirmOffers {
-        require(creatorTakeItOrLeaveItGiven == true);
+    // function receiverTakeItOrLeaveItResponse(
+    //     bool _accept
+    // ) public onlyOpponent unresolved pastFirstFirmOffers {
+    //     require(creatorTakeItOrLeaveItGiven == true);
 
-        if (_accept == true) {
-            require(
-                balance[creator] >= finalTakeItOrLeaveItAmount,
-                "The contract creator has removed his funds and this offer is no longer availabel"
-            );
-            balance[creator] -= finalTakeItOrLeaveItAmount;
-            balance[opponent] += finalTakeItOrLeaveItAmount;
-            // transfer nft receipt
-            resolved = true;
-            creatorTakeItOrLeaveItRespondedTo = true;
-            emit TakeItOrLeaveItResponse(
-                opponent,
-                true,
-                finalTakeItOrLeaveItAmount
-            );
-        } else if (_accept == false) {
-            require(balance[creator] >= penalty);
-            balance[creator] -= penalty;
-            balance[summFoundation] += penalty;
-            creatorTakeItOrLeaveItRespondedTo = true;
-            emit TakeItOrLeaveItResponse(opponent, false, 0);
-        }
-    }
+    //     if (_accept == true) {
+    //         require(
+    //             balance[creator] >= finalTakeItOrLeaveItAmount,
+    //             "The contract creator has removed his funds and this offer is no longer availabel"
+    //         );
+    //         balance[creator] -= finalTakeItOrLeaveItAmount;
+    //         balance[opponent] += finalTakeItOrLeaveItAmount;
+    //         // transfer nft receipt
+    //         resolved = true;
+    //         creatorTakeItOrLeaveItRespondedTo = true;
+    //         emit TakeItOrLeaveItResponse(
+    //             opponent,
+    //             true,
+    //             finalTakeItOrLeaveItAmount
+    //         );
+    //     } else if (_accept == false) {
+    //         require(balance[creator] >= penalty);
+    //         balance[creator] -= penalty;
+    //         balance[summFoundation] += penalty;
+    //         creatorTakeItOrLeaveItRespondedTo = true;
+    //         emit TakeItOrLeaveItResponse(opponent, false, 0);
+    //     }
+    // }
 
-    function receiverTakeOrLeave(
-        uint _amount
-    ) public onlyOpponent unresolved pastFirstFirmOffers {
-        require(receiverTakeOrLeaveRequestGiven == false);
-        require(balance[creator] >= penalty);
-        finalTakeOrLeaveRequestAmount = _amount;
-        receiverTakeOrLeaveRequestGiven = true;
-        emit TakeItOrLeaveItOfferGiven(opponent, true, _amount);
-    }
+    // function receiverTakeOrLeave(
+    //     uint _amount
+    // ) public onlyOpponent unresolved pastFirstFirmOffers {
+    //     require(receiverTakeOrLeaveRequestGiven == false);
+    //     require(balance[creator] >= penalty);
+    //     finalTakeOrLeaveRequestAmount = _amount;
+    //     receiverTakeOrLeaveRequestGiven = true;
+    //     emit TakeItOrLeaveItOfferGiven(opponent, true, _amount);
+    // }
 
-    function creatorTakeOrLeaveResponse(
-        bool _accept
-    ) public onlyCreator unresolved pastFirstFirmOffers {
-        require(receiverTakeOrLeaveRequestGiven == true);
+    // function creatorTakeOrLeaveResponse(
+    //     bool _accept
+    // ) public onlyCreator unresolved pastFirstFirmOffers {
+    //     require(receiverTakeOrLeaveRequestGiven == true);
 
-        if (_accept == true) {
-            require(
-                balance[creator] >= finalTakeOrLeaveRequestAmount,
-                "you dont have enough funds to process this offer"
-            );
-            balance[creator] -= finalTakeOrLeaveRequestAmount;
-            balance[opponent] += finalTakeOrLeaveRequestAmount;
-            resolved = true;
-            receiversTakeOrLeaveRespondedTo = true;
-            emit TakeItOrLeaveItResponse(
-                creator,
-                true,
-                finalTakeOrLeaveRequestAmount
-            );
-        } else if (_accept == false) {
-            require(balance[opponent] >= penalty);
-            balance[opponent] -= penalty;
-            balance[summFoundation] += penalty;
-            receiversTakeOrLeaveRespondedTo = true;
-            emit TakeItOrLeaveItResponse(creator, false, 0);
-        }
-    }
+    //     if (_accept == true) {
+    //         require(
+    //             balance[creator] >= finalTakeOrLeaveRequestAmount,
+    //             "you dont have enough funds to process this offer"
+    //         );
+    //         balance[creator] -= finalTakeOrLeaveRequestAmount;
+    //         balance[opponent] += finalTakeOrLeaveRequestAmount;
+    //         resolved = true;
+    //         receiversTakeOrLeaveRespondedTo = true;
+    //         emit TakeItOrLeaveItResponse(
+    //             creator,
+    //             true,
+    //             finalTakeOrLeaveRequestAmount
+    //         );
+    //     } else if (_accept == false) {
+    //         require(balance[opponent] >= penalty);
+    //         balance[opponent] -= penalty;
+    //         balance[summFoundation] += penalty;
+    //         receiversTakeOrLeaveRespondedTo = true;
+    //         emit TakeItOrLeaveItResponse(creator, false, 0);
+    //     }
+    // }
 }

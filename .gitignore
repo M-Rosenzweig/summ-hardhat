@@ -85,3 +85,5 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+thoughts.txt

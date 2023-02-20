@@ -8,6 +8,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     // deployments lets us actually deploy and log (plus other stuff but that is what we are doing here..)
     const { deploy, log } = deployments
     const { deployer } = await getNamedAccounts()
+    // const chainId = network.config.chainId
     const waitBlockConfirmations = developmentChains.includes(network.name) // if its a testnet than we should do 6 / couple as stipulated in our helper-hardhat-config
         ? 1
         : VERIFICATION_BLOCK_CONFIRMATIONS
@@ -27,6 +28,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         await verify(SummFactory.address, arguments)
     }
     log("----------------------------------------------------")
+    console.log("SummFactory deployed to:", SummFactory.address); 
 }
 
-module.exports.tags = ["all", "nftmarketplace"] // when giving command in terminal to deploy can use tags to only deploy certain ones..
+module.exports.tags = ["all", "summFactory"] // when giving command in terminal to deploy can use tags to only deploy certain ones..

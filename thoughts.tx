@@ -1,0 +1,4 @@
+Major steps to making this project actually REAL
+- Make the variables of offers and their cumalative amounts private and unknowable 
+- The balance model must be changed to a Authorize and move token model. 
+- the legal forms and Docu sign that says the party agrees to the outcome of X negotitation on Etherum at X address. 
