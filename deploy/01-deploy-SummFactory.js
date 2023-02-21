@@ -29,4 +29,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log("----------------------------------------------------")
 }
 
-module.exports.tags = ["all", "nftmarketplace"] // when giving command in terminal to deploy can use tags to only deploy certain ones..
+module.exports.tags = ["all", "SummFactory"] // when giving command in terminal to deploy can use tags to only deploy certain ones..
