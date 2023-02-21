@@ -80,14 +80,14 @@ module.exports = {
   },
   namedAccounts: {
     deployer: {
-      default: 0, // here this will by default take the first account as deployer
-      1: 0, // similarly on mainnet it will take the first account as deployer. Note though that depending on how hardhat network are configured, the account 0 on one network can be different than on another
+      31337: 19, // here this will by default take the first account as deployer
+      // 1: 0, // similarly on mainnet it will take the first account as deployer. Note though that depending on how hardhat network are configured, the account 0 on one network can be different than on another
     },
     opponent: {
-      default: 1,
+      31337: 1,
     },
     summFoundation: {
-      default: 2,
+      31337: 2,
     },
   },
   solidity: {

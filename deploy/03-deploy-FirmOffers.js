@@ -1,29 +1,29 @@
-const { network } = require("hardhat")
-const { developmentChains, VERIFICATION_BLOCK_CONFIRMATIONS } = require("../helper-hardhat-config")
+const { network } = require("hardhat");
+const { developmentChains, VERIFICATION_BLOCK_CONFIRMATIONS } = require("../helper-hardhat-config");
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
-    const { deploy, log } = deployments
-    const { deployer } = await getNamedAccounts(1)
+  const { deploy, log } = deployments;
+  const { deployer } = await getNamedAccounts();
 
+  const waitBlockConfirmations = developmentChains.includes(network.name)
+    ? 1
+    : VERIFICATION_BLOCK_CONFIRMATIONS;
 
-    const waitBlockConfirmations = developmentChains.includes(network.name)
-        ? 1
-        : VERIFICATION_BLOCK_CONFIRMATIONS
+  log("----------------------------------------------------");
 
-    log("----------------------------------------------------")
- 
-    const SummTermsAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+  const SummTermsAddress = "0xB581C9264f59BF0289fA76D61B2D0746dCE3C30D";
 
-    const arguments = [SummTermsAddress]
-    const FirmOffers = await deploy("FirmOffers", {
-        from: deployer,
-        args: arguments,
-        log: true,
-        waitConfirmations: waitBlockConfirmations,
-    })
-    log("----------------------------------------------------")
-    console.log("FirmOffers deployed to:", FirmOffers.address);
-    console.log("deployer:", deployer);
-}
+  const arguments = [SummTermsAddress];
+  const FirmOffers = await deploy("FirmOffers", {
+    from: deployer,
+    args: arguments,
+    log: true,
+    waitConfirmations: waitBlockConfirmations,
+    // gas: 5000000,
+  });
+  log("----------------------------------------------------");
+  console.log("FirmOffers deployed to:", FirmOffers.address);
+  console.log("deployer:", deployer);
+};
 
-module.exports.tags = ["all", "FirmOffers"]
+module.exports.tags = ["all", "FirmOffers"];
