@@ -28,4 +28,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     console.log("opponent:", opponent);
 }
 
-module.exports.tags = ["all", "summTerms"]
+module.exports.tags = ["all", "SummTerms"]
