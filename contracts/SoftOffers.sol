@@ -9,29 +9,32 @@ import "hardhat/console.sol";
 
 contract SoftOffers is Summ {
 
-uint public numberVibessss = 613; 
+  event SoftOfferGiven(address _who, uint _number, bool _bothGivenAndProcessed); 
+  event InRange(bool _readyToAccept, bool _softRoundActive); 
+  event OfferAccepted(address _who, bool _bothPartiesAccept, uint _finalCompromisedAmount, bool _resolved); 
+  event OfferDeclined(address _who, bool _softOfferRoundsActive);
+  event MediumNumberAndPenaltyVariablesSet(bool _set); 
 
-uint private currentSoftGiverOffer; 
-uint private currentSoftReceiverOffer;
+  uint public numberVibessss = 613; 
 
-SoftReceiverOffer[] private softReceiverOffers; 
-SoftGiverOffer[] private softGiverOffers;
+  uint private currentSoftGiverOffer; 
+  uint private currentSoftReceiverOffer;
 
-modifier sameOfferNumberAndBothGivenUnresolved() {
-    require(currentSoftGiverOffer == currentSoftReceiverOffer); 
-    require(softReceiverOffers[currentSoftReceiverOffer -1].given == true && softGiverOffers[currentSoftGiverOffer -1].given == true);
-    require(resolved == false); 
-_;
-}
+  SoftReceiverOffer[] private softReceiverOffers; 
+  SoftGiverOffer[] private softGiverOffers;
+
+  modifier sameOfferNumberAndBothGivenUnresolved() {
+      require(currentSoftGiverOffer == currentSoftReceiverOffer); 
+      require(softReceiverOffers[currentSoftReceiverOffer -1].given == true && softGiverOffers[currentSoftGiverOffer -1].given == true);
+      require(resolved == false); 
+  _;
+  }
 
 
-constructor(address _termsAddress) 
-    Summ(_termsAddress){ 
-}
+  constructor(address _termsAddress) 
+      Summ(_termsAddress){ 
+  }
 
-function testing() public view returns(address payable) {
-    return creator; 
-}
 
     function initiateSoftGiverOffer(uint _amount) public onlyCreator softRoundCurrentlyActive {
       uint bufferAmount = _amount * softRange / 200; 

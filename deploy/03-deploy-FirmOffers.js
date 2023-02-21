@@ -23,6 +23,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     })
     log("----------------------------------------------------")
     console.log("FirmOffers deployed to:", FirmOffers.address);
+    console.log("deployer:", deployer);
 }
 
 module.exports.tags = ["all", "FirmOffers"]

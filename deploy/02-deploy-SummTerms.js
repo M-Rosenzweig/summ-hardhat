@@ -24,6 +24,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     })
     log("----------------------------------------------------")
     console.log("SummTerms deployed to:", SummTerms.address);
+    console.log("deployer:", deployer);
+    console.log("opponent:", opponent);
 }
 
 module.exports.tags = ["all", "summTerms"]

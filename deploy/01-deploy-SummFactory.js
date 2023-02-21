@@ -25,6 +25,9 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log(
         `SummFactory deployed to: ${SummFactory.address} on ${network.name} network.`
     )
+    log(
+        `deployer: ${deployer}`
+    )
 
     // Verify the deployment (we not on development chains and we have a etherscan API then verify. )
     // if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {

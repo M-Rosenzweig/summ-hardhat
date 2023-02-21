@@ -4,19 +4,14 @@ pragma solidity ^0.8.17;
 import "./SummTerms.sol"; 
 import "hardhat/console.sol";
 
+error Summ__OnlyCreator(address _creator); 
+error Summ__OnlyOpponent(address _opponent); 
+error Summ__NotEnoughBalance(); 
+// error Summ__NotEnoughBalanceToCoverPenalty(uint _balancePlusPenaltyAmount); 
+
 contract Summ{
 
-     event SoftOfferGiven(address _who, uint _number, bool _bothGivenAndProcessed); 
-     event InRange(bool _readyToAccept, bool _softRoundActive); 
-     event OfferAccepted(address _who, bool _bothPartiesAccept, uint _finalCompromisedAmount, bool _resolved); 
-     event OfferDeclined(address _who, bool _softOfferRoundsActive);
-     event MediumNumberAndPenaltyVariablesSet(bool _set); 
-     event FirmOfferGiven(address _who, uint _number, bool _bothGivenAndProcessed);
-     event FirmOfferStatus(bool _withinRange, uint _giverOffer, uint _receiverOffer, uint _percentageDiff, uint amountDiff, uint _compromiseAmount, uint _finalFirmAmount, bool _resolved, bool _penalties);
-     event PenaltyGiven(address _whoPaid, address _whoReceived, uint _penaltyAmount); 
-     event AmountDistanceTie(bool _tie); 
-     event TakeItOrLeaveItOfferGiven(address _who, bool _given, uint _amount); 
-     event TakeItOrLeaveItResponse(address _whoResponded, bool _accepted, uint _amount); 
+     event DepositGiven(uint _amount); 
 
      SummTerms internal summTerms; 
 
@@ -53,7 +48,7 @@ contract Summ{
      uint internal finalFirmOffer;  
 
      bool internal creatorTakeItOrLeaveItGiven; 
-     uint public finalTakeItOrLeaveItAmount; 
+    //  uint public finalTakeItOrLeaveItAmount; 
      bool internal creatorTakeItOrLeaveItRespondedTo; 
 
      bool internal receiverTakeOrLeaveRequestGiven; 
@@ -92,12 +87,18 @@ contract Summ{
      FirmGiverOffer[] private firmGiverOffers;
 
      modifier onlyCreator() {
-    require(msg.sender == creator);
+       if(msg.sender != creator) {
+         revert Summ__OnlyCreator(creator); 
+       }
+    // require(msg.sender == creator);
     _;
   }
 
     modifier onlyOpponent() {
-    require(msg.sender == opponent);
+      if(msg.sender != opponent){
+        revert Summ__OnlyOpponent(opponent); 
+      }
+    // require(msg.sender == opponent);
     _;
   }
 
@@ -149,7 +150,8 @@ contract Summ{
      }
 
      function deposit() public payable { 
-       balance[msg.sender] += msg.value; 
+       balance[msg.sender] += msg.value;
+       emit DepositGiven(msg.value);  
      }
 
      function checkBalance() public view returns(uint) {
@@ -157,46 +159,52 @@ contract Summ{
      }
 
      function fullWithdrawl() public {
-       if( msg.sender == creator && creatorTakeItOrLeaveItGiven == true && creatorTakeItOrLeaveItRespondedTo == false){
-         uint availableWithdrawAmount = (balance[creator] - penalty); 
+      //  if( msg.sender == creator && creatorTakeItOrLeaveItGiven == true && creatorTakeItOrLeaveItRespondedTo == false){
+      //    uint availableWithdrawAmount = (balance[creator] - penalty); 
         //  require(availableWithdrawAmount > penalty);
-         balance[creator] -= (availableWithdrawAmount + penalty); 
-         balance[summFoundation] += penalty;
-         creator.transfer(availableWithdrawAmount);
-         creatorTakeItOrLeaveItRespondedTo = true;  
-       } else if(msg.sender == opponent && receiverTakeOrLeaveRequestGiven == true && receiversTakeOrLeaveRespondedTo == false){
-         uint availableWithdrawAmount = (balance[opponent] - penalty); 
-         balance[opponent] -= (availableWithdrawAmount + penalty);
-         balance[summFoundation] += penalty;  
-         opponent.transfer(availableWithdrawAmount); 
-         receiversTakeOrLeaveRespondedTo = true; 
-       }
-       else{
+      //    balance[creator] -= (availableWithdrawAmount + penalty); 
+      //    balance[summFoundation] += penalty;
+      //    creator.transfer(availableWithdrawAmount);
+      //    creatorTakeItOrLeaveItRespondedTo = true;  
+      //  } else if(msg.sender == opponent && receiverTakeOrLeaveRequestGiven == true && receiversTakeOrLeaveRespondedTo == false){
+      //    uint availableWithdrawAmount = (balance[opponent] - penalty); 
+      //    balance[opponent] -= (availableWithdrawAmount + penalty);
+      //    balance[summFoundation] += penalty;  
+      //    opponent.transfer(availableWithdrawAmount); 
+      //    receiversTakeOrLeaveRespondedTo = true; 
+      //  }
+      //  else{
          uint amountToWithdraw = balance[msg.sender]; 
          balance[msg.sender] -= amountToWithdraw; 
          payable(msg.sender).transfer(amountToWithdraw); 
-       }
+      //  }
      }
 
     function partialWithdraw(uint _amount) public {
-      if( msg.sender == creator && creatorTakeItOrLeaveItGiven == true && creatorTakeItOrLeaveItRespondedTo == false){
-      require(balance[creator] >= (_amount + penalty));
-      balance[creator] -= (_amount + penalty); 
-      balance[summFoundation] += penalty;
-      creator.transfer(_amount);
-      creatorTakeItOrLeaveItRespondedTo = true; 
-      } else if(msg.sender == opponent && receiverTakeOrLeaveRequestGiven == true && receiversTakeOrLeaveRespondedTo == false) {
-        require(balance[opponent] >= (_amount + penalty)); 
-        balance[opponent] -= (_amount + penalty);
-        balance[summFoundation] += penalty; 
-        opponent.transfer(_amount); 
-        receiversTakeOrLeaveRespondedTo = true;  
-      }
-       else {
+      // if( msg.sender == creator && creatorTakeItOrLeaveItGiven == true && creatorTakeItOrLeaveItRespondedTo == false){
+      // require(balance[creator] >= (_amount + penalty));
+      // balance[creator] -= (_amount + penalty); 
+      // balance[summFoundation] += penalty;
+      // creator.transfer(_amount);
+      // creatorTakeItOrLeaveItRespondedTo = true; 
+      // } else if(msg.sender == opponent && receiverTakeOrLeaveRequestGiven == true && receiversTakeOrLeaveRespondedTo == false) {
+      //   require(balance[opponent] >= (_amount + penalty)); 
+      //   if(balance[opponent] < (_amount + penalty)){
+      //     revert Summ__NotEnoughBalanceToCoverPenalty(_amount + penalty); 
+      //   }
+      //   balance[opponent] -= (_amount + penalty);
+      //   balance[summFoundation] += penalty; 
+      //   opponent.transfer(_amount); 
+      //   receiversTakeOrLeaveRespondedTo = true;  
+      // }
+      //  else {
       require(_amount <= balance[msg.sender]); 
+      if(_amount > balance[msg.sender]){
+        revert Summ__NotEnoughBalance(); 
+      }
       balance[msg.sender] -= _amount; 
       payable(msg.sender).transfer(_amount);
-      } 
+      // } 
     } 
 
 }

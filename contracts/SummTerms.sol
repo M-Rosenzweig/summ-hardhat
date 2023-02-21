@@ -34,10 +34,6 @@ contract SummTerms {
     address payable immutable summFoundation;
 
     modifier onlyOpponent() {
-        // require(
-        //     msg.sender == opponent,
-        //     "Only the contract opponent can call this function."
-        // );
         if(msg.sender != opponent) revert SummTerms__MustBeOpponent(msg.sender); 
     
         _;

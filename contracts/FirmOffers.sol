@@ -6,12 +6,19 @@ import "./SoftOffers.sol";
 
 contract FirmOffers is SoftOffers {
 
-     FirmReceiverOffer[] private firmReceiverOffers;
-     FirmGiverOffer[] private firmGiverOffers;
+    event FirmOfferGiven(address _who, uint _number, bool _bothGivenAndProcessed);
+    event FirmOfferStatus(bool _withinRange, uint _giverOffer, uint _receiverOffer, uint _percentageDiff, uint amountDiff, uint _compromiseAmount, uint _finalFirmAmount, bool _resolved, bool _penalties);
+    event PenaltyGiven(address _whoPaid, address _whoReceived, uint _penaltyAmount); 
+    event AmountDistanceTie(bool _tie); 
+    event TakeItOrLeaveItOfferGiven(address _who, bool _given, uint _amount); 
+    event TakeItOrLeaveItResponse(address _whoResponded, bool _accepted, uint _amount); 
 
-    constructor(address _termsAddress)
-    SoftOffers(_termsAddress){
-    }
+    FirmReceiverOffer[] private firmReceiverOffers;
+    FirmGiverOffer[] private firmGiverOffers;
+
+  constructor(address _termsAddress)
+  SoftOffers(_termsAddress){
+  }
 
 
  function initiateFirmGiverOffer(uint _amount) public onlyCreator unresolved{
